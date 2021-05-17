@@ -3,7 +3,7 @@ const Container = ({
   className = '',
 }: React.PropsWithChildren<ContainerProps>) => {
   return (
-    <section className="h-screen">
+    <section className="min-h-screen">
       <div className="md:p-6 p-3">
         <div
           className={`bg-white dark:bg-gray-900 rounded-md overflow-hidden ${className}`.trim()}>

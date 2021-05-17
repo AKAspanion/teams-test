@@ -127,7 +127,7 @@ const Add = ({ type = 'add' }: { type?: string }) => {
             onInput={(v: string) => setUserForm('lastName', v)}
           />
         </div>
-        <div className="flex gap-3 md:gap-5 pt-4 md:pt-5 flex-col md:flex-row">
+        <div className="flex gap-3 md:gap-5 pt-3 md:pt-5 flex-col md:flex-row">
           <Input
             value={user.email}
             placeholder="Email"

@@ -4,6 +4,8 @@ import Routes from '../routes';
 import { ErrorFallback } from '../views';
 
 function App() {
+  document.documentElement.classList.add('dark');
+
   return (
     <main className="bg-gray-200 bg-opacity-40 dark:bg-gray-700 text-gray-500 dark:text-white h-full">
       <div className="max-w-screen-lg mx-auto">

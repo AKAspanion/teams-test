@@ -13,7 +13,9 @@ const Home = () => {
       <Heading
         title="Team members"
         className="p-3 md:p-6 pb-0 md:pb-0"
-        subtitle={`You have ${members.length} team members.`}
+        subtitle={`You have ${members.length} team member${
+          members.length > 1 ? 's' : ''
+        }.`}
         onAction={() => history.push('/add')}
       />
       <UserList items={members} />
