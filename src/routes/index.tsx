@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { Add, Home, NotFound } from '../views';
+import { Add, Edit, Home, NotFound } from '../views';
 
 const Routes = () => {
   return (
@@ -11,6 +11,9 @@ const Routes = () => {
         </Route>
         <Route exact path="/add">
           <Add />
+        </Route>
+        <Route exact path="/:id/edit">
+          <Edit />
         </Route>
         <Route path="*">
           <NotFound />

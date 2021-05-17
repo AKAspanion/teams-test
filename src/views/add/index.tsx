@@ -1,17 +1,53 @@
 import cs from 'classnames';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
 import { IoMdRadioButtonOff, IoMdRadioButtonOn } from 'react-icons/io';
 
 import { Container, Heading, Button, Input } from '../../components';
 import { useUserForm } from '../../hooks/useUserForm';
 
-const Add = () => {
-  const { user, setUser } = useUserForm({
+type AddProps = {
+  type?: string;
+};
+
+const Add = ({ type = 'add' }: AddProps) => {
+  const params = useParams<AppParams>();
+
+  const [editUser, setEditUser] = useState<any>({
     isAdmin: false,
     firstName: '',
     lastName: '',
     email: '',
     phone: '',
   });
+
+  const { user, userValidation, setUser, validate } = useUserForm(editUser);
+
+  const handleClick = () => {
+    validate();
+
+    const { firstName, email } = userValidation;
+
+    if (email && firstName) {
+      console.log('add user', user);
+    }
+  };
+
+  useEffect(() => {
+    if (type === 'edit') {
+      const { id } = params;
+
+      setTimeout(() => {
+        setEditUser({
+          isAdmin: false,
+          firstName: id,
+          lastName: '',
+          email: '',
+          phone: '',
+        });
+      }, 1000);
+    }
+  }, [params, type]);
 
   return (
     <Container>
@@ -28,6 +64,7 @@ const Add = () => {
           <Input
             value={user.firstName}
             placeholder="First name"
+            error={userValidation.firstName === false}
             onInput={(v: string) => setUser('firstName', v)}
           />
           <Input
@@ -40,12 +77,13 @@ const Add = () => {
           <Input
             value={user.email}
             placeholder="Email"
-            onInput={(v: string) => setUser('lastName', v)}
+            error={userValidation.email === false}
+            onInput={(v: string) => setUser('email', v)}
           />
           <Input
             value={user.phone}
             placeholder="Phone"
-            onInput={(v: string) => setUser('lastName', v)}
+            onInput={(v: string) => setUser('phone', v)}
           />
         </div>
       </div>
@@ -91,7 +129,7 @@ const Add = () => {
         </div>
       </div>
       <div className="p-3 md:p-6 flex justify-end">
-        <Button>Save</Button>
+        <Button onClick={() => handleClick()}>Save</Button>
       </div>
     </Container>
   );

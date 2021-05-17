@@ -16,12 +16,15 @@ declare type ContainerProps = {
 };
 
 declare type InputProps = {
+  type?: string;
   value: string;
+  error?: boolean;
   onInput?: Function;
   placeholder?: string;
 };
 
 declare type ButtonProps = {
+  onClick?: Function;
   className?: string;
 };
 
@@ -29,4 +32,8 @@ declare type HeadingProps = {
   title: string;
   subtitle: string;
   className?: string;
+};
+
+declare type AppParams = {
+  id?: string;
 };
