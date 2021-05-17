@@ -1,10 +1,21 @@
+import cs from 'classnames';
 import { AiOutlinePlus } from 'react-icons/ai';
 
-const Heading = ({ title, subtitle, className }: HeadingProps) => {
+const Heading = ({
+  title,
+  close,
+  subtitle,
+  onAction,
+  className,
+}: HeadingProps) => {
   return (
     <div className={className}>
       <div className="flex justify-end">
-        <div className="text-blue-500 cursor-pointer">
+        <div
+          className={cs('text-blue-500 cursor-pointer', {
+            'transform rotate-45': close === true,
+          })}
+          onClick={() => onAction && onAction()}>
           <AiOutlinePlus size={28} />
         </div>
       </div>

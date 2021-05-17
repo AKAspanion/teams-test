@@ -1,45 +1,22 @@
-import { Container, Heading, UserList } from '../../components';
+import { useSelector } from 'react-redux';
+import { useHistory } from 'react-router-dom';
 
-const items = [
-  {
-    id: '1',
-    isAdmin: true,
-    name: 'Adrien Olkzac',
-    phone: '123-345-322',
-    email: 'adrien@abc.com',
-  },
-  {
-    id: '1',
-    isAdmin: true,
-    name: 'Adrien Olkzac',
-    phone: '123-345-322',
-    email: 'adrien@abc.com',
-  },
-  {
-    id: '1',
-    isAdmin: true,
-    name: 'Adrien Olkzac',
-    phone: '123-345-322',
-    email: 'adrien@abc.com',
-  },
-  {
-    id: '1',
-    isAdmin: true,
-    name: 'Adrien Olkzac',
-    phone: '123-345-322',
-    email: 'adrien@abc.com',
-  },
-];
+import { Container, Heading, UserList } from '../../components';
+import { selectTeamMembers } from '../../redux/selectors';
 
 const Home = () => {
+  const history = useHistory();
+  const members = useSelector(selectTeamMembers);
+
   return (
     <Container>
       <Heading
         title="Team members"
         className="p-3 md:p-6 pb-0 md:pb-0"
-        subtitle="You have 3 team members."
+        subtitle={`You have ${members.length} team members.`}
+        onAction={() => history.push('/add')}
       />
-      <UserList items={items} />
+      <UserList items={members} />
     </Container>
   );
 };

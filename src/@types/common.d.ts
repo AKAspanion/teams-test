@@ -9,6 +9,7 @@ declare type UserListProps = {
 
 declare type UserListItemProps = {
   item?: any;
+  onClick?: Function;
 };
 
 declare type ContainerProps = {
@@ -30,10 +31,23 @@ declare type ButtonProps = {
 
 declare type HeadingProps = {
   title: string;
+  close?: boolean;
   subtitle: string;
+  onAction?: Function;
   className?: string;
 };
 
 declare type AppParams = {
   id?: string;
 };
+
+declare type TeamMember = {
+  id: string;
+  firstName: string;
+  lastName?: string;
+  email: string;
+  phone?: string;
+  isAdmin: boolean;
+};
+
+declare type FormType = { [key: string]: any };

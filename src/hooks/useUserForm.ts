@@ -1,6 +1,4 @@
-import { useEffect, useState } from 'react';
-
-type FormType = { [key: string]: any };
+import { useState } from 'react';
 
 export const useUserForm = (initialState: FormType) => {
   const validationObj = (state: FormType) =>
@@ -11,7 +9,7 @@ export const useUserForm = (initialState: FormType) => {
   const [user, setUserState] = useState<FormType>(initialState ?? {});
   const [userValidation, setUserValidation] = useState<FormType>({});
 
-  const setUser = (key: string, value: any) => {
+  const setUserForm = (key: string, value: any) => {
     if (user[key] === undefined) {
       throw new Error('Invalid key');
     }
@@ -25,10 +23,5 @@ export const useUserForm = (initialState: FormType) => {
     setUserValidation((state) => ({ ...state, ...validationObj(user) }));
   };
 
-  useEffect(() => {
-    setUserState(() => ({ ...initialState }));
-    setUserValidation(() => ({}));
-  }, [initialState]);
-
-  return { user, userValidation, setUser, validate };
+  return { user, userValidation, setUserForm, validate };
 };

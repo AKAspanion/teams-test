@@ -1,19 +1,22 @@
 import cs from 'classnames';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import uid from 'short-uuid';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useParams, useHistory } from 'react-router-dom';
 import { IoMdRadioButtonOff, IoMdRadioButtonOn } from 'react-icons/io';
 
 import { Container, Heading, Button, Input } from '../../components';
+import { addTeamMember, editTeamMember } from '../../redux/actions';
+import { selectTeamMembers } from '../../redux/selectors';
 import { useUserForm } from '../../hooks/useUserForm';
 
-type AddProps = {
-  type?: string;
-};
-
-const Add = ({ type = 'add' }: AddProps) => {
+const Add = ({ type = 'add' }: { type?: string }) => {
+  const members = useSelector(selectTeamMembers);
   const params = useParams<AppParams>();
+  const dispatch = useDispatch();
+  const history = useHistory();
 
-  const [editUser, setEditUser] = useState<any>({
+  const { user, userValidation, setUserForm, validate } = useUserForm({
     isAdmin: false,
     firstName: '',
     lastName: '',
@@ -21,15 +24,38 @@ const Add = ({ type = 'add' }: AddProps) => {
     phone: '',
   });
 
-  const { user, userValidation, setUser, validate } = useUserForm(editUser);
+  const memberFound = (key: string, value: any) =>
+    members.findIndex((member: any) => member[key] === value) > -1;
 
-  const handleClick = () => {
-    validate();
+  const handleClick = async () => {
+    try {
+      validate();
 
-    const { firstName, email } = userValidation;
+      const { firstName, email } = userValidation;
 
-    if (email && firstName) {
-      console.log('add user', user);
+      if (email && firstName) {
+        if (type === 'add') {
+          if (memberFound('email', user.email)) {
+            alert('Member with email id already exists');
+            return;
+          }
+
+          dispatch(addTeamMember({ id: uid.generate(), ...user }));
+        } else if (type === 'edit') {
+          const { id } = params;
+
+          if (memberFound('id', id)) {
+            if (id) {
+              dispatch(editTeamMember(id, { ...user }));
+            }
+          } else {
+            alert('This user id doesnt exists');
+          }
+        }
+      }
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error adding team member');
     }
   };
 
@@ -37,24 +63,34 @@ const Add = ({ type = 'add' }: AddProps) => {
     if (type === 'edit') {
       const { id } = params;
 
-      setTimeout(() => {
-        setEditUser({
-          isAdmin: false,
-          firstName: id,
-          lastName: '',
-          email: '',
-          phone: '',
-        });
-      }, 1000);
+      if (id) {
+        const memberIndex = members.findIndex(
+          (member: TeamMember) => member.id === id,
+        );
+
+        if (memberIndex > -1) {
+          const { firstName, lastName, email, phone, isAdmin } =
+            members[memberIndex];
+
+          setUserForm('firstName', firstName);
+          setUserForm('lastName', lastName);
+          setUserForm('isAdmin', isAdmin);
+          setUserForm('email', email);
+          setUserForm('phone', phone);
+        }
+      }
     }
-  }, [params, type]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [params, type, members]);
 
   return (
     <Container>
       <Heading
-        title="Add a team member"
+        close
         className="p-3 md:p-6"
-        subtitle="Set email, location and role."
+        subtitle="Set email, name, phone and role."
+        title={`${type === 'add' ? 'Add' : 'Edit'} a team member`}
+        onAction={() => history.push('/')}
       />
       <div className="p-3 md:p-6 border-t">
         <div className="font-medium md:text-xl text-gray-700 pb-3 md:pb-4">
@@ -65,12 +101,12 @@ const Add = ({ type = 'add' }: AddProps) => {
             value={user.firstName}
             placeholder="First name"
             error={userValidation.firstName === false}
-            onInput={(v: string) => setUser('firstName', v)}
+            onInput={(v: string) => setUserForm('firstName', v)}
           />
           <Input
             value={user.lastName}
             placeholder="Last name"
-            onInput={(v: string) => setUser('lastName', v)}
+            onInput={(v: string) => setUserForm('lastName', v)}
           />
         </div>
         <div className="flex gap-3 md:gap-5 pt-4 md:pt-5 flex-col md:flex-row">
@@ -78,12 +114,12 @@ const Add = ({ type = 'add' }: AddProps) => {
             value={user.email}
             placeholder="Email"
             error={userValidation.email === false}
-            onInput={(v: string) => setUser('email', v)}
+            onInput={(v: string) => setUserForm('email', v)}
           />
           <Input
             value={user.phone}
             placeholder="Phone"
-            onInput={(v: string) => setUser('phone', v)}
+            onInput={(v: string) => setUserForm('phone', v)}
           />
         </div>
       </div>
@@ -93,7 +129,7 @@ const Add = ({ type = 'add' }: AddProps) => {
         </div>
         <div className="py-3 md:py-4 md:pb-6">
           <div
-            onClick={() => setUser('isAdmin', false)}
+            onClick={() => setUserForm('isAdmin', false)}
             className="flex justify-between border-b border-t px-3 py-3 md:px-6 py-4   cursor-pointer">
             <p
               className={cs('pr-4 text-sm md:text-base', {
@@ -110,7 +146,7 @@ const Add = ({ type = 'add' }: AddProps) => {
             </div>
           </div>
           <div
-            onClick={() => setUser('isAdmin', true)}
+            onClick={() => setUserForm('isAdmin', true)}
             className="flex justify-between border-b px-3 py-3 md:px-6 md:py-4 cursor-pointer">
             <p
               className={cs('pr-4 text-sm md:text-base', {
