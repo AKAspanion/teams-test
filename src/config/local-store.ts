@@ -1,4 +1,4 @@
 export const LOCAL_STORE_CONFIG: LocalForageOptions = {
-  name: 'Spanion template',
+  name: 'Threado app',
   storeName: 'store',
 };
