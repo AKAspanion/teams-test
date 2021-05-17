@@ -20,11 +20,13 @@ declare type InputProps = {
   type?: string;
   value: string;
   error?: boolean;
+  maxLength?: number;
   onInput?: Function;
   placeholder?: string;
 };
 
 declare type ButtonProps = {
+  error?: boolean;
   onClick?: Function;
   className?: string;
 };

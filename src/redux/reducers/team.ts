@@ -1,4 +1,8 @@
-import { ADD_TEAM_MEMBER, EDIT_TEAM_MEMBER } from '../types';
+import {
+  ADD_TEAM_MEMBER,
+  EDIT_TEAM_MEMBER,
+  DELETE_TEAM_MEMBER,
+} from '../types';
 
 const intialState: any = { members: [] };
 
@@ -14,6 +18,13 @@ export const teamReducer = (state = intialState, action: ReduxAction) => {
       state.members[objIndex] = { ...oldObj, ...user };
 
       return { ...state, members: [...state.members] };
+    case DELETE_TEAM_MEMBER:
+      return {
+        ...state,
+        members: [
+          ...state.members.filter((m: TeamMember) => m.id !== action.payload),
+        ],
+      };
     default:
       return state;
   }

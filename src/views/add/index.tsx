@@ -5,8 +5,12 @@ import { useDispatch, useSelector } from 'react-redux';
 import { useParams, useHistory } from 'react-router-dom';
 import { IoMdRadioButtonOff, IoMdRadioButtonOn } from 'react-icons/io';
 
+import {
+  addTeamMember,
+  editTeamMember,
+  deleteTeamMember,
+} from '../../redux/actions';
 import { Container, Heading, Button, Input } from '../../components';
-import { addTeamMember, editTeamMember } from '../../redux/actions';
 import { selectTeamMembers } from '../../redux/selectors';
 import { useUserForm } from '../../hooks/useUserForm';
 
@@ -27,7 +31,7 @@ const Add = ({ type = 'add' }: { type?: string }) => {
   const memberFound = (key: string, value: any) =>
     members.findIndex((member: any) => member[key] === value) > -1;
 
-  const handleClick = async () => {
+  const handleSave = async () => {
     try {
       validate();
 
@@ -41,12 +45,14 @@ const Add = ({ type = 'add' }: { type?: string }) => {
           }
 
           dispatch(addTeamMember({ id: uid.generate(), ...user }));
+          history.push('/');
         } else if (type === 'edit') {
           const { id } = params;
 
           if (memberFound('id', id)) {
             if (id) {
               dispatch(editTeamMember(id, { ...user }));
+              history.push('/');
             }
           } else {
             alert('This user id doesnt exists');
@@ -59,6 +65,18 @@ const Add = ({ type = 'add' }: { type?: string }) => {
     }
   };
 
+  const handleDelete = () => {
+    const { id } = params;
+
+    if (memberFound('id', id)) {
+      if (id) {
+        dispatch(deleteTeamMember(id));
+        history.push('/');
+      }
+    } else {
+      alert('This user id doesnt exists');
+    }
+  };
   useEffect(() => {
     if (type === 'edit') {
       const { id } = params;
@@ -92,8 +110,8 @@ const Add = ({ type = 'add' }: { type?: string }) => {
         title={`${type === 'add' ? 'Add' : 'Edit'} a team member`}
         onAction={() => history.push('/')}
       />
-      <div className="p-3 md:p-6 border-t">
-        <div className="font-medium md:text-xl text-gray-700 pb-3 md:pb-4">
+      <div className="p-3 md:p-6 border-t dark:border-gray-800">
+        <div className="font-medium md:text-xl text-gray-700 pb-3 md:pb-4 dark:text-white">
           Info
         </div>
         <div className="flex gap-3 md:gap-5 flex-col md:flex-row">
@@ -117,6 +135,8 @@ const Add = ({ type = 'add' }: { type?: string }) => {
             onInput={(v: string) => setUserForm('email', v)}
           />
           <Input
+            type="number"
+            maxLength={10}
             value={user.phone}
             placeholder="Phone"
             onInput={(v: string) => setUserForm('phone', v)}
@@ -124,16 +144,18 @@ const Add = ({ type = 'add' }: { type?: string }) => {
         </div>
       </div>
       <div>
-        <div className="font-medium md:text-xl text-gray-700 p-3 md:p-6 pb-0 md:pb-0 md:pt-2">
+        <div className="font-medium md:text-xl text-gray-700 p-3 md:p-6 pb-0 md:pb-0 md:pt-2 dark:text-white">
           Role
         </div>
         <div className="py-3 md:py-4 md:pb-6">
           <div
             onClick={() => setUserForm('isAdmin', false)}
-            className="flex justify-between border-b border-t px-3 py-3 md:px-6 py-4   cursor-pointer">
+            className="flex justify-between border-b border-t px-3 py-3 md:px-6 py-4 cursor-pointer dark:border-gray-800">
             <p
               className={cs('pr-4 text-sm md:text-base', {
-                'font-medium text-gray-600': user.isAdmin === false,
+                'opacity-70': user.isAdmin === true,
+                'font-medium text-gray-600 dark:text-white':
+                  user.isAdmin === false,
               })}>
               Regular - Can't delete members
             </p>
@@ -147,10 +169,12 @@ const Add = ({ type = 'add' }: { type?: string }) => {
           </div>
           <div
             onClick={() => setUserForm('isAdmin', true)}
-            className="flex justify-between border-b px-3 py-3 md:px-6 md:py-4 cursor-pointer">
+            className="flex justify-between border-b px-3 py-3 md:px-6 md:py-4 cursor-pointer dark:border-gray-800">
             <p
               className={cs('pr-4 text-sm md:text-base', {
-                'font-medium text-gray-600': user.isAdmin === true,
+                'opacity-70': user.isAdmin === false,
+                'font-medium text-gray-600 dark:text-white':
+                  user.isAdmin === true,
               })}>
               Admin - Can delete members
             </p>
@@ -164,8 +188,17 @@ const Add = ({ type = 'add' }: { type?: string }) => {
           </div>
         </div>
       </div>
-      <div className="p-3 md:p-6 flex justify-end">
-        <Button onClick={() => handleClick()}>Save</Button>
+      <div
+        className={cs('p-3 md:p-6 flex', {
+          'justify-end': type !== 'edit',
+          'justify-between': type === 'edit',
+        })}>
+        {type === 'edit' && (
+          <Button error onClick={() => handleDelete()}>
+            Delete
+          </Button>
+        )}
+        <Button onClick={() => handleSave()}>Save</Button>
       </div>
     </Container>
   );
