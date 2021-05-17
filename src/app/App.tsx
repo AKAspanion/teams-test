@@ -5,8 +5,10 @@ import { ErrorFallback } from '../views';
 
 function App() {
   return (
-    <main>
-      <Routes />
+    <main className="bg-white dark:bg-gray-900 dark:text-white h-full">
+      <div className="max-w-screen-lg mx-auto">
+        <Routes />
+      </div>
     </main>
   );
 }
