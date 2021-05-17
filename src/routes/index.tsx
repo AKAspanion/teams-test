@@ -1,6 +1,6 @@
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 
-import { Home, NotFound } from '../views';
+import { Add, Home, NotFound } from '../views';
 
 const Routes = () => {
   return (
@@ -8,6 +8,9 @@ const Routes = () => {
       <Switch>
         <Route exact path="/">
           <Home />
+        </Route>
+        <Route exact path="/add">
+          <Add />
         </Route>
         <Route path="*">
           <NotFound />

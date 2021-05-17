@@ -4,7 +4,7 @@ const UserList = (props: UserListProps) => {
   const { items } = props;
 
   return items ? (
-    <div className="py-4">
+    <div className="py-3 md:py-6">
       {items.map((item, index) => (
         <UserListItem key={index} item={item} />
       ))}

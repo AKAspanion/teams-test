@@ -10,3 +10,23 @@ declare type UserListProps = {
 declare type UserListItemProps = {
   item?: any;
 };
+
+declare type ContainerProps = {
+  className?: string;
+};
+
+declare type InputProps = {
+  value: string;
+  onInput?: Function;
+  placeholder?: string;
+};
+
+declare type ButtonProps = {
+  className?: string;
+};
+
+declare type HeadingProps = {
+  title: string;
+  subtitle: string;
+  className?: string;
+};
