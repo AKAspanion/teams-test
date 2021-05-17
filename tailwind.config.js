@@ -13,7 +13,10 @@ module.exports = {
     },
   },
   variants: {
-    extend: {},
+    extend: {
+      borderWidth: ['last'],
+      opacity: ['dark'],
+    },
   },
   plugins: [],
 };
